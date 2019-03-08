@@ -1,10 +1,26 @@
 import React, { Component } from 'react';
 import './App.css';
+import { connect } from 'react-redux';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { fetchFriends } from './action/action.js';
+
 import FriendsList from './components/FriendsList';
 import LoginPage from './components/LoginPage';
+import PrivateRoute from './components/PrivateRoute';
+import Protected from './components/Protected'
 
 class App extends Component {
+  // constructor(props){
+  //   super(props)
+  //   this.state ={
+
+  //   };
+  // }
+
+  componentDidMount(){
+    this.props.fetchFriends();
+  }
+
   render() {
     return (
       <Router>
@@ -17,10 +33,13 @@ class App extends Component {
 
         </ul>
 
+        <p> { this.props.friends } </p>
+        
 
-        <h1> Friends List</h1>
         <Route path = "/api/friends" component = {FriendsList} />
         <Route path = "/api/login" component = {LoginPage} />
+        <PrivateRoute path = "/protected" component = {Protected} />
+    
 
 
         </div>
@@ -29,4 +48,11 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    friends: state.friends
+  }
+
+}
+
+export default connect(mapStateToProps, { fetchFriends })(App);
